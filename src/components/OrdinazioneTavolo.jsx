@@ -138,119 +138,139 @@ const OrdinazioneTavolo = () => {
   return (
     <>
       <Container>
-        <div className="d-flex justify-content-between py-2">
-          <div>
-            <Link to={"/"} className="btn btm-sm border border-secondary pt-0 pb-0 ps-1 pe-1 rounded-circle">
-              <ArrowLeft className="pb-1" />
-            </Link>
-          </div>
-          <Button className="btn-sm" onClick={handleSendOrder}>
-            Invia Ordine
-          </Button>
-        </div>
-        <h1>TabTender Ordinazioni</h1>
-        {isLoading ? (
-          // <Spinner animation="border" variant="primary" className="d-block mx-auto" />
-          <></>
-        ) : tavoloSelezionato ? (
-          <>
-            <div className="d-flex justify-content-between align-items-start">
-              <p>Dettagli tavolo: {tavoloSelezionato.id}</p>
-
-              <Button variant="" size="sm" className="" ref={target} onClick={() => setShowOverlay(!showOverlay)}>
-                <GearFill />
+        <Row>
+          <Col md={2} className="d-none d-md-block"></Col>
+          <Col>
+            <div className="d-flex justify-content-between py-2">
+              <div>
+                <Link to={"/"} className="btn btm-sm border border-secondary pt-0 pb-0 ps-1 pe-1 rounded-circle">
+                  <ArrowLeft className="pb-1" />
+                </Link>
+              </div>
+              <Button variant="" className="btn-sm bg-nav" onClick={handleSendOrder}>
+                Invia Ordine
               </Button>
-              <Overlay target={target.current} show={showOverlay} placement="left">
-                {({
-                  placement: _placement,
-                  arrowProps: _arrowProps,
-                  show: _show,
-                  popper: _popper,
-                  hasDoneInitialMeasure: _hasDoneInitialMeasure,
-                  ...props
-                }) => (
-                  <div
-                    {...props}
-                    style={{
-                      position: "absolute",
-                      backgroundColor: "rgba(255, 100, 100, 0)",
-                      padding: "2px 2px",
-                      color: "white",
-                      borderRadius: 3,
-                      ...props.style,
-                    }}
-                  >
-                    <div>
-                      <Button variant="danger" size="sm" className="rounded-circle" onClick={handleShowDeleteModal}>
-                        <Trash2Fill className="pb-1" />
-                      </Button>
-
-                      <Button variant="dark" size="sm" className="rounded-circle ms-2" onClick={handleShowEditModal}>
-                        <PencilSquare className="pb-1" />
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </Overlay>
             </div>
-            <p>Posti disponibili: {tavoloSelezionato.numeroPosti}</p>
-            {ordineCorrente?.prodotti?.length > 0 ? (
-              <ListGroup className="my-2">
-                {ordineCorrente.prodotti.map((prodotto) => (
-                  <ListGroup.Item key={prodotto.tavoloId} className="d-flex justify-content-between">
-                    <div>
-                      <Button
-                        onClick={() => dispatch(updateQuantitaProdotto(prodotto.prodotto.id, prodotto.quantita - 1))}
-                        variant=""
-                        size="sm"
-                        className="rounded-circle border border-secondary px-2 py-0 me-2"
+            <h1>TabTender Ordinazioni</h1>
+            {isLoading ? (
+              // <Spinner animation="border" variant="primary" className="d-block mx-auto" />
+              <></>
+            ) : tavoloSelezionato ? (
+              <>
+                <div className="d-flex justify-content-between align-items-start">
+                  <p>Dettagli tavolo: {tavoloSelezionato.id}</p>
+
+                  <Button variant="" size="sm" className="" ref={target} onClick={() => setShowOverlay(!showOverlay)}>
+                    <GearFill />
+                  </Button>
+                  <Overlay target={target.current} show={showOverlay} placement="left">
+                    {({
+                      placement: _placement,
+                      arrowProps: _arrowProps,
+                      show: _show,
+                      popper: _popper,
+                      hasDoneInitialMeasure: _hasDoneInitialMeasure,
+                      ...props
+                    }) => (
+                      <div
+                        {...props}
+                        style={{
+                          position: "absolute",
+                          backgroundColor: "rgba(255, 100, 100, 0)",
+                          padding: "2px 2px",
+                          color: "white",
+                          borderRadius: 3,
+                          ...props.style,
+                        }}
                       >
-                        -
-                      </Button>
-                      {prodotto.prodotto.nome} x {prodotto.quantita}
-                      <Button
-                        onClick={() => dispatch(updateQuantitaProdotto(prodotto.prodotto.id, prodotto.quantita + 1))}
-                        variant=""
-                        size="sm"
-                        className="rounded-circle border border-secondary px-1 py-0 ms-2"
-                      >
-                        <Plus className="pb-1" />
-                      </Button>
-                    </div>
-                    {(prodotto.prodotto.prezzo * prodotto.quantita).toLocaleString("it-IT", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                    €
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
+                        <div>
+                          <Button variant="danger" size="sm" className="rounded-circle" onClick={handleShowDeleteModal}>
+                            <Trash2Fill className="pb-1" />
+                          </Button>
+
+                          <Button
+                            variant="dark"
+                            size="sm"
+                            className="rounded-circle ms-2"
+                            onClick={handleShowEditModal}
+                          >
+                            <PencilSquare className="pb-1" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </Overlay>
+                </div>
+                <p>Posti disponibili: {tavoloSelezionato.numeroPosti}</p>
+                {ordineCorrente?.prodotti?.length > 0 ? (
+                  <ListGroup className="my-2">
+                    {ordineCorrente.prodotti.map((prodotto) => (
+                      <ListGroup.Item key={prodotto.tavoloId} className="d-flex justify-content-between">
+                        <div>
+                          <Button
+                            onClick={() =>
+                              dispatch(updateQuantitaProdotto(prodotto.prodotto.id, prodotto.quantita - 1))
+                            }
+                            variant=""
+                            size="sm"
+                            className="rounded-circle border border-secondary px-2 py-0 me-2"
+                          >
+                            -
+                          </Button>
+                          {prodotto.prodotto.nome} x {prodotto.quantita}
+                          <Button
+                            onClick={() =>
+                              dispatch(updateQuantitaProdotto(prodotto.prodotto.id, prodotto.quantita + 1))
+                            }
+                            variant=""
+                            size="sm"
+                            className="rounded-circle border border-secondary px-1 py-0 ms-2"
+                          >
+                            <Plus className="pb-1" />
+                          </Button>
+                        </div>
+                        {(prodotto.prodotto.prezzo * prodotto.quantita).toLocaleString("it-IT", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                        €
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                ) : (
+                  <p>Premi sui prodotti per ordinare! &#128071;</p>
+                )}
+              </>
             ) : (
-              <p>Premi sui prodotti per ordinare! &#128071;</p>
+              <p>Nessun dato disponibile</p>
             )}
-          </>
-        ) : (
-          <p>Nessun dato disponibile</p>
-        )}
 
-        <h5>
-          Totale:{" "}
-          {totaleOrdine.toLocaleString("it-IT", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-          €
-        </h5>
+            <h5>
+              Totale:{" "}
+              {totaleOrdine.toLocaleString("it-IT", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+              €
+            </h5>
 
-        <div className="d-flex justify-content-between py-2">
-          <Button variant="danger" size="sm" onClick={() => dispatch(clearOrdineCorrente())}>
-            Svuota ordine
-          </Button>
+            <div className="d-flex justify-content-between py-2">
+              <Button variant="danger" size="sm" onClick={() => dispatch(clearOrdineCorrente())}>
+                Svuota ordine
+              </Button>
 
-          <Button variant="danger" size="sm" className="rounded-circle" onClick={() => handleShowDeleteOrdineModal()}>
-            <Trash2Fill className="pb-1" />
-          </Button>
-        </div>
+              <Button
+                variant="danger"
+                size="sm"
+                className="rounded-circle"
+                onClick={() => handleShowDeleteOrdineModal()}
+              >
+                <Trash2Fill className="pb-1" />
+              </Button>
+            </div>
+          </Col>
+          <Col md={2} className="d-none d-md-block"></Col>
+        </Row>
 
         <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
           <Modal.Header closeButton>
@@ -315,7 +335,13 @@ const OrdinazioneTavolo = () => {
           </Toast>
         </ToastContainer>
       </Container>
+      {/* <Row>
+        <Col md={4} className="d-none d-md-block"></Col>
+        <Col> */}
       <BarraOrdinazione />
+      {/* </Col>
+        <Col md={4} className="d-none d-md-block"></Col>
+      </Row> */}
     </>
   );
 };

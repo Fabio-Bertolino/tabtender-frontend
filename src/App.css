@@ -1,0 +1,9 @@
+.bg-nav {
+  background: #ffffff;
+  background: linear-gradient(
+    167deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(235, 235, 232, 1) 50%,
+    rgba(237, 237, 237, 1) 100%
+  );
+}

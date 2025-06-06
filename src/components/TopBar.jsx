@@ -16,7 +16,7 @@ const TopBar = () => {
     navigate("/auth");
   };
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar expand="lg" className="bg-nav" sticky="top">
       <Container>
         <Image
           src="src/assets/img/TabLogo.png"
@@ -25,12 +25,18 @@ const TopBar = () => {
           height="40"
           className="rounded-circle me-3"
         />
-        <Navbar.Brand href="#home">TabTender</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Brand href="#home">
+          Tab<span className="text-secondary">Tender</span>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" className="border-0" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <NavLink to={"/"}>Tavoli</NavLink>
-            <NavLink to={"/area-amministratore"}>Area Amministratore</NavLink>
+            <NavLink className="nav-link" to={"/"}>
+              Tavoli
+            </NavLink>
+            <NavLink className="nav-link" to={"/area-amministratore"}>
+              Area Amministratore
+            </NavLink>
             <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
           </Nav>
         </Navbar.Collapse>

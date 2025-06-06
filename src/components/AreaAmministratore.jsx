@@ -196,7 +196,7 @@ const AreaAmministratore = () => {
 
   return (
     <Container>
-      <h2>Area Amministratore</h2>
+      <h2 className="display-6 py-3">Area Amministratore</h2>
       <h4>Modifica Menù</h4>
       {isLoading && <Spinner animation="border" variant="primary" className="d-block mx-auto" />}
       {reparti.map((reparto) => (
@@ -207,7 +207,7 @@ const AreaAmministratore = () => {
             aria-controls={`collapse-${reparto.id}`}
             aria-expanded={openRepartoId === reparto.id}
             style={{ cursor: "pointer" }}
-            className="d-flex justify-content-between align-items-center"
+            className="d-flex justify-content-between align-items-center border-bottom border-secondary-subtle"
           >
             {reparto.nome}
             {openRepartoId === reparto.id ? (

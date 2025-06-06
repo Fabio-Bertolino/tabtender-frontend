@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { Alert, Button, Container, Form } from "react-bootstrap";
+import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { IS_LOGIN, IS_NOT_LOGIN, SET_PASSWORD, SET_TOKEN, SET_USERNAME } from "../redux/actions";
 
@@ -38,40 +38,46 @@ const Auth = () => {
 
   return (
     <Container>
-      <h2>{isLogin ? "Login" : "Registrazione"}</h2>
-      <Form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <Form.Control
-            type="text"
-            className="form-control"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => dispatch({ type: SET_USERNAME, payload: e.target.value })}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <Form.Control
-            type="password"
-            className="form-control"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => dispatch({ type: SET_PASSWORD, payload: e.target.value })}
-            required
-          />
-        </div>
+      <Row>
+        <Col md={3} className="d-none d-md-block"></Col>
+        <Col>
+          <h2 className="pt-5">{isLogin ? "Login" : "Registrazione"}</h2>
+          <Form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <Form.Control
+                type="text"
+                className="form-control"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => dispatch({ type: SET_USERNAME, payload: e.target.value })}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <Form.Control
+                type="password"
+                className="form-control"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => dispatch({ type: SET_PASSWORD, payload: e.target.value })}
+                required
+              />
+            </div>
 
-        <Button type="submit" variant="primary">
-          {isLogin ? "Login" : "Registrati"}
-        </Button>
-        <Button
-          type="button"
-          className="btn btn-link"
-          onClick={() => dispatch({ type: isLogin ? IS_NOT_LOGIN : IS_LOGIN })}
-        >
-          {isLogin ? "Crea un account" : "Hai già un account? Login"}
-        </Button>
-      </Form>
+            <Button type="submit" variant="" className="bg-nav">
+              {isLogin ? "Login" : "Registrati"}
+            </Button>
+            <Button
+              type="button"
+              className="btn btn-link"
+              onClick={() => dispatch({ type: isLogin ? IS_NOT_LOGIN : IS_LOGIN })}
+            >
+              {isLogin ? "Crea un account" : "Hai già un account? Login"}
+            </Button>
+          </Form>
+        </Col>
+        <Col md={3} className="d-none d-md-block"></Col>
+      </Row>
     </Container>
   );
 };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, ListGroup, Spinner, Modal, Form, Toast, ToastContainer } from "react-bootstrap";
+import { Button, ListGroup, Spinner, Modal, Form, Toast, ToastContainer, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getTavoliAction, postTavoloAction } from "../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
@@ -39,27 +39,33 @@ const Tavoli = () => {
 
   return (
     <>
-      <ListGroup>
-        {isLoading && <Spinner animation="border" variant="primary" className="d-block mx-auto" />}
-        {tavoli.map((tavolo) => (
-          <Link key={tavolo.id} to={"/tavoli/" + tavolo.id}>
-            {tavolo.disponibile ? (
-              <ListGroup.Item>
-                Tavolo {tavolo.id}, Posti disponibili: {tavolo.numeroPosti}
-              </ListGroup.Item>
-            ) : (
-              <ListGroup.Item variant="success">
-                Tavolo {tavolo.id}, Posti disponibili: {tavolo.numeroPosti}
-              </ListGroup.Item>
-            )}
-          </Link>
-        ))}
-        <ListGroup.Item>
-          <Button variant="" className="rounded-circle border border-secondary px-1 py-0" onClick={handleShow}>
-            <Plus className="pb-1" />
-          </Button>
-        </ListGroup.Item>
-      </ListGroup>
+      <Row>
+        <Col md={2} className="d-none d-md-block"></Col>
+        <Col>
+          <ListGroup>
+            {isLoading && <Spinner animation="border" variant="primary" className="d-block mx-auto" />}
+            {tavoli.map((tavolo) => (
+              <Link className="nav-link" key={tavolo.id} to={"/tavoli/" + tavolo.id}>
+                {tavolo.disponibile ? (
+                  <ListGroup.Item>
+                    Tavolo {tavolo.id}, Posti disponibili: {tavolo.numeroPosti}
+                  </ListGroup.Item>
+                ) : (
+                  <ListGroup.Item variant="success">
+                    Tavolo {tavolo.id}, Posti disponibili: {tavolo.numeroPosti}
+                  </ListGroup.Item>
+                )}
+              </Link>
+            ))}
+            <ListGroup.Item>
+              <Button variant="" className="rounded-circle border border-secondary px-1 py-0" onClick={handleShow}>
+                <Plus className="pb-1" />
+              </Button>
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
+        <Col md={2} className="d-none d-md-block"></Col>
+      </Row>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
