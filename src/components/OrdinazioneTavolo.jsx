@@ -112,23 +112,19 @@ const OrdinazioneTavolo = () => {
     }
   };
 
-  // const handleSendOrder = async () => {
-  //   const result = await dispatch(submitOrdineAction());
-  //   console.log("result", result);
-  //   if (result?.type?.includes("fulfilled")) {
-  //     const isEdit = ordine?.id !== undefined;
-  //     const successMessage = isEdit ? "Ordine modificato con successo!" : "Ordine creato con successo!";
-  //     setToastMessage(successMessage);
-  //     setShowToast(true);
-  //     handleClose();
-  //     setTimeout(() => {
-  //       navigate("/");
-  //     }, 700);
-  //   } else {
-  //     setToastMessage("Errore durante il salvataggio dell’ordine.");
-  //     setShowToast(true);
-  //   }
-  // };
+  const handleSendOrder = async () => {
+    const result = await dispatch(submitOrdineAction());
+    console.log("result", result);
+    if (result.success) {
+      setToastMessage("Ordine salvato con successo!");
+    } else {
+      setToastMessage("Errore nel salvataggio dell' ordine.");
+    }
+    setShowToast(true);
+    setTimeout(() => {
+      navigate("/");
+    }, 700);
+  };
 
   // const closeToast = () => {
   //   setShowToast(false);
@@ -148,7 +144,7 @@ const OrdinazioneTavolo = () => {
               <ArrowLeft className="pb-1" />
             </Link>
           </div>
-          <Button className="btn-sm" onClick={() => dispatch(submitOrdineAction())}>
+          <Button className="btn-sm" onClick={handleSendOrder}>
             Invia Ordine
           </Button>
         </div>

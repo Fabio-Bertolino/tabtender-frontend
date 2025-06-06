@@ -409,6 +409,7 @@ export const submitOrdineAction = () => async (dispatch, getState) => {
 
     const data = await res.json();
     dispatch({ type: ORDINE_SUBMIT_SUCCESS, payload: data });
+    return { success: true, data };
   } catch (err) {
     dispatch({ type: ORDINE_SUBMIT_FAILURE, payload: err.message });
   } finally {
