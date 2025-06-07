@@ -147,7 +147,7 @@ const OrdinazioneTavolo = () => {
                   <ArrowLeft className="pb-1" />
                 </Link>
               </div>
-              <Button variant="" className="btn-sm bg-nav" onClick={handleSendOrder}>
+              <Button variant="" className="btn-sm btn-bright" onClick={handleSendOrder}>
                 Invia Ordine
               </Button>
             </div>
@@ -334,14 +334,8 @@ const OrdinazioneTavolo = () => {
             <Toast.Body>{toastMessage}</Toast.Body>
           </Toast>
         </ToastContainer>
+        <BarraOrdinazione />
       </Container>
-      {/* <Row>
-        <Col md={4} className="d-none d-md-block"></Col>
-        <Col> */}
-      <BarraOrdinazione />
-      {/* </Col>
-        <Col md={4} className="d-none d-md-block"></Col>
-      </Row> */}
     </>
   );
 };

@@ -64,7 +64,7 @@ const Auth = () => {
               />
             </div>
 
-            <Button type="submit" variant="" className="bg-nav">
+            <Button type="submit" variant="" className="btn-bright">
               {isLogin ? "Login" : "Registrati"}
             </Button>
             <Button

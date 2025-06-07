@@ -13,7 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   const token = useSelector((state) => state.auth.token);
   return (
-    <>
+    <div className="App">
       <BrowserRouter>
         <TopBar />
         <Routes>
@@ -30,7 +30,7 @@ function App() {
           <Route path="/area-amministratore" element={<AreaAmministratore />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </div>
   );
 }
 

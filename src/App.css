@@ -1,3 +1,7 @@
+.App {
+  height: 100vh;
+}
+
 .bg-nav {
   background: #ffffff;
   background: linear-gradient(
@@ -6,4 +10,24 @@
     rgba(235, 235, 232, 1) 50%,
     rgba(237, 237, 237, 1) 100%
   );
+}
+
+.btn-bright {
+  background: #ffffff;
+  background: linear-gradient(
+    167deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(235, 235, 232, 1) 50%,
+    rgba(237, 237, 237, 1) 100%
+  );
+}
+
+.btn-bright:active {
+  background: #ffffff;
+  background: linear-gradient(167deg, rgb(237, 237, 237) 0%, rgb(217, 217, 217) 50%, rgb(227, 227, 227) 100%);
+}
+
+.scrollable-collapse {
+  max-height: 30vh;
+  overflow-y: auto;
 }

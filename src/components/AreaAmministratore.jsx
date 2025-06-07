@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Button,
+  Col,
   Collapse,
   Container,
   Form,
   ListGroup,
   Modal,
   Overlay,
+  Row,
   Spinner,
   Toast,
   ToastContainer,
@@ -17,6 +19,7 @@ import {
   deleteProdottoAction,
   deleteRepartoAction,
   getRepartiAction,
+  getRepartoByIdAction,
   postProdottoAction,
   postRepartoAction,
   putProdottoAction,
@@ -148,6 +151,7 @@ const AreaAmministratore = () => {
     const result = await dispatch(postProdottoAction(nomeProdotto, prezzoProdotto, repartoId));
     if (result.success) {
       setToastMessage("Prodotto creato con successo!");
+      dispatch(getRepartoByIdAction(repartoId));
     } else {
       setToastMessage("Errore nella creazione del prodotto.");
     }
@@ -161,9 +165,10 @@ const AreaAmministratore = () => {
     event.preventDefault();
     const result = await dispatch(putProdottoAction(prodottoId, nomeProdotto, prezzoProdotto, repartoId));
     if (result.success) {
-      setToastMessage("Prodotto creato con successo!");
+      setToastMessage("Prodotto modificato con successo!");
+      dispatch(getRepartoByIdAction(repartoId));
     } else {
-      setToastMessage("Errore nella creazione del prodotto.");
+      setToastMessage("Errore nella modifica del prodotto.");
     }
     setShowToast(true);
     handleClosePutProdottoModal();
@@ -196,274 +201,285 @@ const AreaAmministratore = () => {
 
   return (
     <Container>
-      <h2 className="display-6 py-3">Area Amministratore</h2>
-      <h4>Modifica Menù</h4>
-      {isLoading && <Spinner animation="border" variant="primary" className="d-block mx-auto" />}
-      {reparti.map((reparto) => (
-        <>
-          <h5
-            key={reparto.id}
-            onClick={() => toggleReparto(reparto.id)}
-            aria-controls={`collapse-${reparto.id}`}
-            aria-expanded={openRepartoId === reparto.id}
-            style={{ cursor: "pointer" }}
-            className="d-flex justify-content-between align-items-center border-bottom border-secondary-subtle"
-          >
-            {reparto.nome}
-            {openRepartoId === reparto.id ? (
-              <Button variant="sm">
-                <ChevronCompactUp className="fs-6" />
-              </Button>
-            ) : (
-              <Button variant="sm">
-                <ChevronCompactDown className="fs-6" />
-              </Button>
-            )}
-          </h5>
-          <Collapse in={openRepartoId === reparto.id}>
-            <div id={"collapse-" + reparto.id}>
-              <Button
-                variant=""
-                size="sm"
-                className=""
-                ref={(el) => (refs.current[reparto.id] = el)}
-                onClick={() => toggleOverlay(reparto.id)}
+      <Row>
+        <Col md={2}></Col>
+        <Col>
+          <h2 className="display-6 py-3">Area Amministratore</h2>
+          <h4>Modifica Menù</h4>
+          {isLoading && <Spinner animation="border" variant="primary" className="d-block mx-auto" />}
+          {reparti.map((reparto) => (
+            <>
+              <h5
+                key={reparto.id}
+                onClick={() => toggleReparto(reparto.id)}
+                aria-controls={`collapse-${reparto.id}`}
+                aria-expanded={openRepartoId === reparto.id}
+                style={{ cursor: "pointer" }}
+                className="d-flex justify-content-between align-items-center border-bottom border-secondary-subtle"
               >
-                <GearFill />
-              </Button>
-
-              <Overlay target={refs.current[reparto.id]} show={overlayRepartoId === reparto.id} placement="right">
-                <div
-                  style={{
-                    position: "absolute",
-                    backgroundColor: "rgba(255, 100, 100, 0)",
-                    borderRadius: 3,
-                    padding: "4px",
-                    zIndex: 9999,
-                  }}
-                >
+                {reparto.nome}
+                {openRepartoId === reparto.id ? (
+                  <Button variant="sm">
+                    <ChevronCompactUp className="fs-6" />
+                  </Button>
+                ) : (
+                  <Button variant="sm">
+                    <ChevronCompactDown className="fs-6" />
+                  </Button>
+                )}
+              </h5>
+              <Collapse in={openRepartoId === reparto.id}>
+                <div id={"collapse-" + reparto.id}>
                   <Button
-                    variant="dark"
+                    variant=""
                     size="sm"
-                    className="me-1"
-                    onClick={() => handleShowPutRepartoModal(reparto.id)}
+                    className=""
+                    ref={(el) => (refs.current[reparto.id] = el)}
+                    onClick={() => toggleOverlay(reparto.id)}
                   >
-                    <PencilSquare />
+                    <GearFill />
                   </Button>
-                  <Button variant="danger" size="sm" onClick={() => handleShowDeleteRepartoModal(reparto.id)}>
-                    <Trash2Fill />
-                  </Button>
-                </div>
-              </Overlay>
-              <ListGroup className="py-2">
-                {reparto.prodotti.map((prodotto) => (
-                  <ListGroup.Item className="d-flex justify-content-between align-items-center" key={prodotto.id}>
-                    {prodotto.nome}
-                    <div>
+
+                  <Overlay target={refs.current[reparto.id]} show={overlayRepartoId === reparto.id} placement="right">
+                    <div
+                      style={{
+                        position: "absolute",
+                        backgroundColor: "rgba(255, 100, 100, 0)",
+                        borderRadius: 3,
+                        padding: "4px",
+                        zIndex: 9999,
+                      }}
+                    >
                       <Button
                         variant="dark"
                         size="sm"
                         className="me-1"
-                        onClick={() => handleShowPutProdottoModal(prodotto.id, reparto.id)}
+                        onClick={() => handleShowPutRepartoModal(reparto.id)}
                       >
                         <PencilSquare />
                       </Button>
-                      <Button variant="danger" size="sm" onClick={() => handleShowDeleteProductModal(prodotto.id)}>
+                      <Button variant="danger" size="sm" onClick={() => handleShowDeleteRepartoModal(reparto.id)}>
                         <Trash2Fill />
                       </Button>
                     </div>
-                  </ListGroup.Item>
-                ))}
-                <ListGroup.Item>
-                  <Button
-                    variant=""
-                    className="rounded-circle border border-secondary px-1 py-0"
-                    onClick={() => handleShowPostProdottoModal(reparto.id)}
-                  >
-                    <Plus className="pb-1" />
-                  </Button>
-                </ListGroup.Item>
-              </ListGroup>
-            </div>
-          </Collapse>
-        </>
-      ))}
-      <Button
-        variant=""
-        className="rounded-circle border border-secondary px-1 py-0"
-        onClick={handleShowPostRepartoModal}
-      >
-        <Plus className="pb-1" />
-      </Button>
-
-      <Modal show={showDeleteProductModal} onHide={handleCloseDeleteProductModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Sei sicuro di voler eliminare il prodotto?</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <Alert variant="warning">
-            <Alert.Heading className="text-center">Attenzione</Alert.Heading>
-            <div className="d-flex align-items-center">
-              <p>⚠️</p>
-              <p className="px-1 text-center">
-                I prodotti ancora presenti nelle ordinazioni non potranno essere cancellati! Procedere?
-              </p>
-              <p>⚠️</p>
-            </div>
-          </Alert>
-          <Button variant="danger" className="me-3" onClick={() => handleDeleteProduct(prodottoId)}>
-            Elimina
+                  </Overlay>
+                  <ListGroup className="py-2">
+                    {reparto.prodotti.map((prodotto) => (
+                      <ListGroup.Item className="d-flex justify-content-between align-items-center" key={prodotto.id}>
+                        {prodotto.nome}:{" "}
+                        {prodotto.prezzo.toLocaleString("it-IT", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                        €
+                        <div>
+                          <Button
+                            variant="dark"
+                            size="sm"
+                            className="me-1"
+                            onClick={() => handleShowPutProdottoModal(prodotto.id, reparto.id)}
+                          >
+                            <PencilSquare />
+                          </Button>
+                          <Button variant="danger" size="sm" onClick={() => handleShowDeleteProductModal(prodotto.id)}>
+                            <Trash2Fill />
+                          </Button>
+                        </div>
+                      </ListGroup.Item>
+                    ))}
+                    <ListGroup.Item>
+                      <Button
+                        variant=""
+                        className="rounded-circle border border-secondary px-1 py-0"
+                        onClick={() => handleShowPostProdottoModal(reparto.id)}
+                      >
+                        <Plus className="pb-1" />
+                      </Button>
+                    </ListGroup.Item>
+                  </ListGroup>
+                </div>
+              </Collapse>
+            </>
+          ))}
+          <Button
+            variant=""
+            className="rounded-circle border border-secondary px-1 py-0"
+            onClick={handleShowPostRepartoModal}
+          >
+            <Plus className="pb-1" />
           </Button>
-          <Button variant="secondary" onClick={handleCloseDeleteProductModal}>
-            Annulla
-          </Button>
-        </Modal.Body>
-      </Modal>
 
-      <Modal show={showDeleteRepartoModal} onHide={handleCloseDeleteRepartoModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Sei sicuro di voler eliminare il reparto?</Modal.Title>
-        </Modal.Header>
+          <Modal show={showDeleteProductModal} onHide={handleCloseDeleteProductModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Sei sicuro di voler eliminare il prodotto?</Modal.Title>
+            </Modal.Header>
 
-        <Modal.Body>
-          <Alert variant="warning">
-            <Alert.Heading className="text-center">Attenzione</Alert.Heading>
-            <div className="d-flex align-items-center">
-              <p>⚠️</p>
-              <p className="px-1 text-center">
-                I reparti con prodotti ancora presenti nelle ordinazioni non potranno essere cancellati! Procedere?
-              </p>
-              <p>⚠️</p>
-            </div>
-          </Alert>
-          <Button variant="danger" className="me-3" onClick={() => handleDeleteReparto(repartoId)}>
-            Elimina
-          </Button>
-          <Button variant="secondary" onClick={handleCloseDeleteRepartoModal}>
-            Annulla
-          </Button>
-        </Modal.Body>
-      </Modal>
+            <Modal.Body>
+              <Alert variant="warning">
+                <Alert.Heading className="text-center">Attenzione</Alert.Heading>
+                <div className="d-flex align-items-center">
+                  <p>⚠️</p>
+                  <p className="px-1 text-center">
+                    I prodotti ancora presenti nelle ordinazioni non potranno essere cancellati! Procedere?
+                  </p>
+                  <p>⚠️</p>
+                </div>
+              </Alert>
+              <Button variant="danger" className="me-3" onClick={() => handleDeleteProduct(prodottoId)}>
+                Elimina
+              </Button>
+              <Button variant="secondary" onClick={handleCloseDeleteProductModal}>
+                Annulla
+              </Button>
+            </Modal.Body>
+          </Modal>
 
-      <Modal show={showPostRepartoModal} onHide={handleClosePostRepartoModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Aggiungi un reparto</Modal.Title>
-        </Modal.Header>
+          <Modal show={showDeleteRepartoModal} onHide={handleCloseDeleteRepartoModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Sei sicuro di voler eliminare il reparto?</Modal.Title>
+            </Modal.Header>
 
-        <Modal.Body>
-          <Form onSubmit={(event) => handleSubmitPostReparto(event)}>
-            <Form.Label>Nome del reparto:</Form.Label>
-            <Form.Control
-              type="text"
-              value={nomeReparto}
-              onChange={(event) => setNomeReparto(event.target.value)}
-              required
-            />
-            <Button type="submit" variant="success" className="mt-3">
-              Salva reparto
-            </Button>
-            <Button variant="secondary" className="mt-3 ms-3" onClick={handleClosePostRepartoModal}>
-              Annulla
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+            <Modal.Body>
+              <Alert variant="warning">
+                <Alert.Heading className="text-center">Attenzione</Alert.Heading>
+                <div className="d-flex align-items-center">
+                  <p>⚠️</p>
+                  <p className="px-1 text-center">
+                    I reparti con prodotti ancora presenti nelle ordinazioni non potranno essere cancellati! Procedere?
+                  </p>
+                  <p>⚠️</p>
+                </div>
+              </Alert>
+              <Button variant="danger" className="me-3" onClick={() => handleDeleteReparto(repartoId)}>
+                Elimina
+              </Button>
+              <Button variant="secondary" onClick={handleCloseDeleteRepartoModal}>
+                Annulla
+              </Button>
+            </Modal.Body>
+          </Modal>
 
-      <Modal show={showPutRepartoModal} onHide={handleClosePutRepartoModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modifica reparto</Modal.Title>
-        </Modal.Header>
+          <Modal show={showPostRepartoModal} onHide={handleClosePostRepartoModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Aggiungi un reparto</Modal.Title>
+            </Modal.Header>
 
-        <Modal.Body>
-          <Form onSubmit={(event) => handleSubmitPutReparto(event)}>
-            <Form.Label>Nome del reparto:</Form.Label>
-            <Form.Control
-              type="text"
-              value={nomeReparto}
-              onChange={(event) => setNomeReparto(event.target.value, repartoId)}
-              required
-            />
-            <Button type="submit" variant="success" className="mt-3">
-              Salva reparto
-            </Button>
-            <Button variant="secondary" className="mt-3 ms-3" onClick={handleClosePutRepartoModal}>
-              Annulla
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+            <Modal.Body>
+              <Form onSubmit={(event) => handleSubmitPostReparto(event)}>
+                <Form.Label>Nome del reparto:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={nomeReparto}
+                  onChange={(event) => setNomeReparto(event.target.value)}
+                  required
+                />
+                <Button type="submit" variant="success" className="mt-3">
+                  Salva reparto
+                </Button>
+                <Button variant="secondary" className="mt-3 ms-3" onClick={handleClosePostRepartoModal}>
+                  Annulla
+                </Button>
+              </Form>
+            </Modal.Body>
+          </Modal>
 
-      <Modal show={showPostProdottoModal} onHide={handleClosePostProdottoModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Aggiungi un prodotto</Modal.Title>
-        </Modal.Header>
+          <Modal show={showPutRepartoModal} onHide={handleClosePutRepartoModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Modifica reparto</Modal.Title>
+            </Modal.Header>
 
-        <Modal.Body>
-          <Form onSubmit={(event) => handleSubmitPostProdotto(event)}>
-            <Form.Label>Nome del prodotto:</Form.Label>
-            <Form.Control
-              type="text"
-              value={nomeProdotto}
-              onChange={(event) => setNomeProdotto(event.target.value)}
-              required
-            />
-            <Form.Label>Prezzo del prodotto:</Form.Label>
-            <Form.Control
-              type="number"
-              value={prezzoProdotto}
-              onChange={(event) => setPrezzoProdotto(event.target.value)}
-              required
-            />
-            <Button type="submit" variant="success" className="mt-3">
-              Salva Prodotto
-            </Button>
-            <Button variant="secondary" className="mt-3 ms-3" onClick={handleClosePostProdottoModal}>
-              Annulla
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+            <Modal.Body>
+              <Form onSubmit={(event) => handleSubmitPutReparto(event)}>
+                <Form.Label>Nome del reparto:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={nomeReparto}
+                  onChange={(event) => setNomeReparto(event.target.value, repartoId)}
+                  required
+                />
+                <Button type="submit" variant="success" className="mt-3">
+                  Salva reparto
+                </Button>
+                <Button variant="secondary" className="mt-3 ms-3" onClick={handleClosePutRepartoModal}>
+                  Annulla
+                </Button>
+              </Form>
+            </Modal.Body>
+          </Modal>
 
-      <Modal show={showPutProdottoModal} onHide={handleClosePutProdottoModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Aggiungi un prodotto</Modal.Title>
-        </Modal.Header>
+          <Modal show={showPostProdottoModal} onHide={handleClosePostProdottoModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Aggiungi un prodotto</Modal.Title>
+            </Modal.Header>
 
-        <Modal.Body>
-          <Form onSubmit={(event) => handleSubmitPutProdotto(event)}>
-            <Form.Label>Nome del prodotto:</Form.Label>
-            <Form.Control
-              type="text"
-              value={nomeProdotto}
-              onChange={(event) => setNomeProdotto(event.target.value)}
-              required
-            />
-            <Form.Label>Prezzo del prodotto:</Form.Label>
-            <Form.Control
-              type="number"
-              value={prezzoProdotto}
-              onChange={(event) => setPrezzoProdotto(event.target.value)}
-              required
-            />
-            <Button type="submit" variant="success" className="mt-3">
-              Salva Prodotto
-            </Button>
-            <Button variant="secondary" className="mt-3 ms-3" onClick={handleClosePutProdottoModal}>
-              Annulla
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+            <Modal.Body>
+              <Form onSubmit={(event) => handleSubmitPostProdotto(event)}>
+                <Form.Label>Nome del prodotto:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={nomeProdotto}
+                  onChange={(event) => setNomeProdotto(event.target.value)}
+                  required
+                />
+                <Form.Label>Prezzo del prodotto:</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={prezzoProdotto}
+                  onChange={(event) => setPrezzoProdotto(event.target.value)}
+                  required
+                />
+                <Button type="submit" variant="success" className="mt-3">
+                  Salva Prodotto
+                </Button>
+                <Button variant="secondary" className="mt-3 ms-3" onClick={handleClosePostProdottoModal}>
+                  Annulla
+                </Button>
+              </Form>
+            </Modal.Body>
+          </Modal>
 
-      <ToastContainer position="top-end" className="p-3">
-        <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
-          <Toast.Header>
-            <strong className="me-auto">Notifica</strong>
-          </Toast.Header>
-          <Toast.Body>{toastMessage}</Toast.Body>
-        </Toast>
-      </ToastContainer>
+          <Modal show={showPutProdottoModal} onHide={handleClosePutProdottoModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Aggiungi un prodotto</Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+              <Form onSubmit={(event) => handleSubmitPutProdotto(event)}>
+                <Form.Label>Nome del prodotto:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={nomeProdotto}
+                  onChange={(event) => setNomeProdotto(event.target.value)}
+                  required
+                />
+                <Form.Label>Prezzo del prodotto:</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={prezzoProdotto}
+                  onChange={(event) => setPrezzoProdotto(event.target.value)}
+                  required
+                />
+                <Button type="submit" variant="success" className="mt-3">
+                  Salva Prodotto
+                </Button>
+                <Button variant="secondary" className="mt-3 ms-3" onClick={handleClosePutProdottoModal}>
+                  Annulla
+                </Button>
+              </Form>
+            </Modal.Body>
+          </Modal>
+
+          <ToastContainer position="top-end" className="p-3">
+            <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
+              <Toast.Header>
+                <strong className="me-auto">Notifica</strong>
+              </Toast.Header>
+              <Toast.Body>{toastMessage}</Toast.Body>
+            </Toast>
+          </ToastContainer>
+        </Col>
+        <Col md={2}></Col>
+      </Row>
     </Container>
   );
 };
