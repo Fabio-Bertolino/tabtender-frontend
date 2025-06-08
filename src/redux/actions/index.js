@@ -438,6 +438,28 @@ export const deleteOrdineAction = (id) => {
   };
 };
 
+export const spostaOrdineAction = (id, nuovoTavoloId) => {
+  return async (dispatch) => {
+    try {
+      let response = await fetch(apiUrl + "/api/ordini/" + id + "/sposta?nuovoTavoloId=" + nuovoTavoloId, {
+        method: "PUT",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        dispatch(getRepartiAction());
+        return { success: true };
+      } else {
+        return { success: false, error: "Modifica fallita" };
+      }
+    } catch (err) {
+      console.log("Error", err);
+      return { success: false, error: err.message };
+    }
+  };
+};
 //-------PRODOTTI--------
 
 export const deleteProdottoAction = (id) => {

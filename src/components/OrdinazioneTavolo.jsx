@@ -7,6 +7,7 @@ import {
   deleteTavoloAction,
   getTavoloByIdAction,
   putTavoloAction,
+  spostaOrdineAction,
   submitOrdineAction,
   updateQuantitaProdotto,
 } from "../redux/actions";
@@ -23,13 +24,14 @@ import {
   Form,
   Overlay,
 } from "react-bootstrap";
-import { ArrowLeft, GearFill, PencilSquare, Plus, Trash2, Trash2Fill } from "react-bootstrap-icons";
+import { ArrowLeft, GearFill, PencilSquare, Plus, Shuffle, Trash2, Trash2Fill } from "react-bootstrap-icons";
 import BarraOrdinazione from "./BarraOrdinazione";
 
 const OrdinazioneTavolo = () => {
   const tavoloSelezionato = useSelector((state) => state.tavoli.tavoloSelezionato);
   const isLoading = useSelector((state) => state.tavoli.isLoading);
   const ordineCorrente = useSelector((state) => state.ordini.ordineCorrente);
+  const tavoli = useSelector((state) => state.tavoli.tavoli);
 
   const dispatch = useDispatch();
 
@@ -41,6 +43,7 @@ const OrdinazioneTavolo = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteOrdineModal, setShowDeleteOrdineModal] = useState(false);
+  const [showSpostaOrdineModal, setShowSpostaOrdineModal] = useState(false);
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -48,6 +51,7 @@ const OrdinazioneTavolo = () => {
   const target = useRef(null);
 
   const [numeroPosti, setNumeroPosti] = useState(0);
+  const [nuovoTavoloId, setNuovoTavoloId] = useState(0);
 
   // const [ordineId, setOrdineId] = useState(0);
 
@@ -57,6 +61,15 @@ const OrdinazioneTavolo = () => {
   const handleShowEditModal = () => setShowEditModal(true);
   const handleCloseDeleteOrdineModal = () => setShowDeleteOrdineModal(false);
   const handleShowDeleteOrdineModal = () => setShowDeleteOrdineModal(true);
+  const handleCloseSpostaOrdineModal = () => setShowSpostaOrdineModal(false);
+  const handleShowSpostaOrdineModal = () => {
+    if (tavoloSelezionato.ordine !== null) {
+      setShowSpostaOrdineModal(true);
+    } else {
+      setToastMessage("Nessun ordine associato a questo tavolo!");
+      setShowToast(true);
+    }
+  };
 
   const totaleOrdine =
     ordineCorrente?.prodotti?.reduce((tot, prod) => {
@@ -126,6 +139,31 @@ const OrdinazioneTavolo = () => {
     }, 700);
   };
 
+  const handleSubmitSpostaOrdine = async (event) => {
+    event.preventDefault();
+    const nuovoTavolo = tavoli.find((t) => t.id === Number(nuovoTavoloId));
+    if (!nuovoTavolo) {
+      setToastMessage("Il tavolo selezionato non esiste!");
+      setShowToast(true);
+      return;
+    }
+    if (nuovoTavolo.ordine) {
+      setToastMessage("Il tavolo selezionato ha già un ordine assegnato!");
+      setShowToast(true);
+      return;
+    }
+    const result = await dispatch(spostaOrdineAction(tavoloSelezionato.ordine.id, nuovoTavoloId));
+    if (result.success) {
+      setToastMessage("Ordine spostato con successo al tavolo " + nuovoTavoloId + "!");
+    } else {
+      setToastMessage("Errore nello spostamento dell' ordine.");
+    }
+    setShowToast(true);
+    setTimeout(() => {
+      navigate("/");
+    }, 700);
+  };
+
   // const closeToast = () => {
   //   setShowToast(false);
   //   navigate("/");
@@ -184,6 +222,15 @@ const OrdinazioneTavolo = () => {
                         }}
                       >
                         <div>
+                          <Button
+                            variant="light"
+                            size="sm"
+                            className="rounded-circle me-2"
+                            onClick={handleShowSpostaOrdineModal}
+                          >
+                            <Shuffle className="pb-1" />
+                          </Button>
+
                           <Button variant="danger" size="sm" className="rounded-circle" onClick={handleShowDeleteModal}>
                             <Trash2Fill className="pb-1" />
                           </Button>
@@ -323,6 +370,30 @@ const OrdinazioneTavolo = () => {
             <Button variant="secondary" size="sm" onClick={handleCloseDeleteOrdineModal}>
               Annulla
             </Button>
+          </Modal.Body>
+        </Modal>
+
+        <Modal show={showSpostaOrdineModal} onHide={handleCloseSpostaOrdineModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Sposta ordine</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            <Form onSubmit={(event) => handleSubmitSpostaOrdine(event)}>
+              <Form.Label>Sposta l'ordine a un altro tavolo</Form.Label>
+              <Form.Control
+                type="number"
+                value={nuovoTavoloId}
+                onChange={(event) => setNuovoTavoloId(event.target.value)}
+                required
+              />
+              <Button type="submit" variant="success" size="sm" className="mt-3">
+                Sposta l'ordine
+              </Button>
+              <Button variant="secondary" size="sm" className="mt-3 ms-3" onClick={handleCloseSpostaOrdineModal}>
+                Annulla
+              </Button>
+            </Form>
           </Modal.Body>
         </Modal>
 
