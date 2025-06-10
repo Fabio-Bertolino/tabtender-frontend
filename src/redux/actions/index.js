@@ -39,6 +39,11 @@ export const setPasswordAction = (password) => ({
   payload: password,
 });
 
+export const setTokenAction = (token) => ({
+  type: SET_TOKEN,
+  payload: token,
+});
+
 export const addProdottoToOrdine = (prodotto) => ({
   type: ADD_PRODOTTO_TO_ORDINE,
   payload: prodotto,
@@ -135,7 +140,7 @@ export const getTavoloByIdAction = (id) => {
   };
 };
 
-export const postTavoloAction = (numeroPosti) => {
+export const postTavoloAction = (numeroTavolo, numeroPosti) => {
   return async (dispatch) => {
     console.log("Sto inviando la richiesta POST...");
     try {
@@ -146,6 +151,7 @@ export const postTavoloAction = (numeroPosti) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          numeroTavolo: numeroTavolo,
           numeroPosti: numeroPosti,
         }),
       });
@@ -368,6 +374,7 @@ export const getOrdineByIdAction = (id) => {
 const formatOrdineForBackend = (ordine) => {
   return {
     tavoloId: ordine.tavoloId,
+    nomeUtente: localStorage.getItem("username"),
     prodotti: ordine.prodotti.map((p) => ({
       prodotto: {
         id: p.prodotto?.id ?? p.id,

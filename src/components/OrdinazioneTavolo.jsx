@@ -51,6 +51,7 @@ const OrdinazioneTavolo = () => {
   const target = useRef(null);
 
   const [numeroPosti, setNumeroPosti] = useState(0);
+  const [numeroPostiValido, setNumeroPostiValido] = useState(true);
   const [nuovoTavoloId, setNuovoTavoloId] = useState(0);
 
   // const [ordineId, setOrdineId] = useState(0);
@@ -66,7 +67,7 @@ const OrdinazioneTavolo = () => {
     if (tavoloSelezionato.ordine !== null) {
       setShowSpostaOrdineModal(true);
     } else {
-      setToastMessage("Nessun ordine associato a questo tavolo!");
+      setToastMessage("Nessun ordine associato a questo tavolo...");
       setShowToast(true);
     }
   };
@@ -85,7 +86,6 @@ const OrdinazioneTavolo = () => {
     }
     handleCloseDeleteModal();
     setShowToast(true);
-    handleClose();
     setTimeout(() => {
       navigate("/");
     }, 700);
@@ -143,7 +143,7 @@ const OrdinazioneTavolo = () => {
     event.preventDefault();
     const nuovoTavolo = tavoli.find((t) => t.id === Number(nuovoTavoloId));
     if (!nuovoTavolo) {
-      setToastMessage("Il tavolo selezionato non esiste!");
+      setToastMessage("Il tavolo selezionato non esiste...");
       setShowToast(true);
       return;
     }
@@ -185,7 +185,12 @@ const OrdinazioneTavolo = () => {
                   <ArrowLeft className="pb-1" />
                 </Link>
               </div>
-              <Button variant="" className="btn-sm btn-bright" onClick={handleSendOrder}>
+              <Button
+                variant=""
+                className="btn-sm btn-bright"
+                onClick={handleSendOrder}
+                disabled={!ordineCorrente || ordineCorrente.prodotti.length === 0}
+              >
                 Invia Ordine
               </Button>
             </div>
@@ -345,10 +350,20 @@ const OrdinazioneTavolo = () => {
               <Form.Control
                 type="number"
                 value={numeroPosti}
-                onChange={(event) => setNumeroPosti(event.target.value)}
+                onChange={(event) => {
+                  const valore = parseInt(event.target.value);
+                  setNumeroPosti(valore);
+                  setNumeroPostiValido(valore > 0);
+                }}
                 required
               />
-              <Button type="submit" variant="success" size="sm" className="mt-3">
+              {!numeroPostiValido && (
+                <Form.Text className="text-danger">
+                  Il numero di posti deve essere maggiore di zero.
+                  <br />
+                </Form.Text>
+              )}
+              <Button type="submit" variant="success" size="sm" className="mt-3" disabled={!numeroPostiValido}>
                 Salva tavolo
               </Button>
               <Button variant="secondary" size="sm" className="mt-3 ms-3" onClick={handleCloseEditModal}>

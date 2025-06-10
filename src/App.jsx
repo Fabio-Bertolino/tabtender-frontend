@@ -26,8 +26,22 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/tavoli/:id" element={<OrdinazioneTavolo />} />
-          <Route path="/area-amministratore" element={<AreaAmministratore />} />
+          <Route
+            path="/tavoli/:id"
+            element={
+              <ProtectedRoute token={token}>
+                <OrdinazioneTavolo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/area-amministratore"
+            element={
+              <ProtectedRoute token={token}>
+                <AreaAmministratore />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </div>

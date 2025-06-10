@@ -2,7 +2,15 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { IS_LOGIN, IS_NOT_LOGIN, SET_PASSWORD, SET_TOKEN, SET_USERNAME } from "../redux/actions";
+import {
+  IS_LOGIN,
+  IS_NOT_LOGIN,
+  SET_PASSWORD,
+  SET_TOKEN,
+  SET_USERNAME,
+  setTokenAction,
+  setUsernameAction,
+} from "../redux/actions";
 
 const Auth = () => {
   const username = useSelector((state) => state.auth.username);
@@ -15,13 +23,19 @@ const Auth = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!username.trim() || !password.trim()) {
+      alert("Username e password sono obbligatori");
+      return;
+    }
     const apiUrl = import.meta.env.VITE_API_URL;
     try {
       const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
       const response = await api.post(`${apiUrl}${endpoint}`, { username, password });
       const newToken = response.data.token;
       localStorage.setItem("token", newToken);
-      dispatch({ type: SET_TOKEN, payload: newToken });
+      dispatch(setTokenAction(newToken));
+      localStorage.setItem("username", username);
+      dispatch(setUsernameAction(username));
       navigate("/");
     } catch (error) {
       alert(error.response?.data?.message || "Errore");

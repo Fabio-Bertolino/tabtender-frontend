@@ -1,7 +1,7 @@
 import { SET_USERNAME, SET_PASSWORD, IS_LOGIN, IS_NOT_LOGIN, SET_TOKEN, LOGOUT } from "../actions";
 
 const initialState = {
-  username: "",
+  username: localStorage.getItem("username") || "",
   password: "",
   token: localStorage.getItem("token") || "",
   isLogin: true,
@@ -21,6 +21,7 @@ const authReducer = (state = initialState, action) => {
       return { ...state, token: action.payload };
     case LOGOUT:
       localStorage.removeItem("token");
+      localStorage.removeItem("username");
       return { ...state, token: "", username: null, password: null };
     default:
       return state;
