@@ -101,6 +101,9 @@ const OrdinazioneTavolo = () => {
     }
     setShowToast(true);
     handleCloseDeleteModal();
+    setTimeout(() => {
+      navigate("/");
+    }, 700);
   };
 
   const handleDeleteOrdine = async () => {

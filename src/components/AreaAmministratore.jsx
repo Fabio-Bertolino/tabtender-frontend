@@ -44,7 +44,6 @@ const AreaAmministratore = () => {
   const [showPutProdottoModal, setShowPutProdottoModal] = useState(false);
   const [nomeProdotto, setNomeProdotto] = useState("");
   const [prezzoProdotto, setPrezzoProdotto] = useState("");
-  const [prezzoValido, setPrezzoValido] = useState(true);
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -426,20 +425,10 @@ const AreaAmministratore = () => {
                 <Form.Control
                   type="number"
                   value={prezzoProdotto}
-                  onChange={(event) => {
-                    const valore = parseInt(event.target.value);
-                    setPrezzoProdotto(valore);
-                    setPrezzoValido(valore > 0);
-                  }}
+                  onChange={(event) => setPrezzoProdotto(event.target.value)}
                   required
                 />
-                {!prezzoValido && (
-                  <Form.Text className="text-danger">
-                    Il prezzo deve essere maggiore di zero.
-                    <br />
-                  </Form.Text>
-                )}
-                <Button type="submit" variant="success" className="mt-3" disabled={!prezzoValido}>
+                <Button type="submit" variant="success" className="mt-3">
                   Salva Prodotto
                 </Button>
                 <Button variant="secondary" className="mt-3 ms-3" onClick={handleClosePostProdottoModal}>
@@ -467,20 +456,10 @@ const AreaAmministratore = () => {
                 <Form.Control
                   type="number"
                   value={prezzoProdotto}
-                  onChange={(event) => {
-                    const valore = parseInt(event.target.value);
-                    setPrezzoProdotto(valore);
-                    setPrezzoValido(valore > 0);
-                  }}
+                  onChange={(event) => setPrezzoProdotto(event.target.value)}
                   required
                 />
-                {!prezzoValido && (
-                  <Form.Text className="text-danger">
-                    Il prezzo deve essere maggiore di zero.
-                    <br />
-                  </Form.Text>
-                )}
-                <Button type="submit" variant="success" className="mt-3" disabled={!prezzoValido}>
+                <Button type="submit" variant="success" className="mt-3">
                   Salva Prodotto
                 </Button>
                 <Button variant="secondary" className="mt-3 ms-3" onClick={handleClosePutProdottoModal}>
